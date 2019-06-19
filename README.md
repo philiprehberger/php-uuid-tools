@@ -8,7 +8,7 @@ UUID v4 and v7 generation, validation, and ordered UUIDs for database indexing.
 
 ## Requirements
 
-- PHP ^8.2
+- PHP 8.2+
 
 ## Installation
 
