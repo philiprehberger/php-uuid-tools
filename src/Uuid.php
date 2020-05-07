@@ -169,6 +169,51 @@ final class Uuid
     }
 
     /**
+     * Check if two UUID strings are equal (case-insensitive).
+     */
+    public static function equals(string $a, string $b): bool
+    {
+        return strtolower($a) === strtolower($b);
+    }
+
+    /**
+     * Compare two UUID strings lexicographically.
+     *
+     * Returns -1, 0, or 1 for use in sorting.
+     */
+    public static function compareTo(string $a, string $b): int
+    {
+        return strtolower($a) <=> strtolower($b);
+    }
+
+    /**
+     * Generate multiple UUIDs at once.
+     *
+     * @param  int  $count  Number of UUIDs to generate
+     * @param  int  $version  UUID version (4 or 7)
+     * @return string[]
+     *
+     * @throws InvalidArgumentException
+     */
+    public static function batch(int $count, int $version = 4): array
+    {
+        if ($count < 1) {
+            throw new InvalidArgumentException('Count must be at least 1.');
+        }
+
+        if ($version !== 4 && $version !== 7) {
+            throw new InvalidArgumentException("Unsupported UUID version: {$version}. Use 4 or 7.");
+        }
+
+        $uuids = [];
+        for ($i = 0; $i < $count; $i++) {
+            $uuids[] = $version === 4 ? self::v4() : self::v7();
+        }
+
+        return $uuids;
+    }
+
+    /**
      * Return the nil UUID (all zeros).
      */
     public static function nil(): string

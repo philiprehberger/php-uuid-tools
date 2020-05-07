@@ -76,6 +76,34 @@ $original = Uuid::fromOrdered($ordered);
 // Recovers the original UUID
 ```
 
+### Batch Generation
+
+Generate multiple UUIDs at once:
+
+```php
+$uuids = Uuid::batch(5);
+// [
+//     "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+//     "6ba7b810-9dad-41d1-80b4-00c04fd430c8",
+//     ...
+// ]
+
+$v7Uuids = Uuid::batch(3, 7);
+// Three time-ordered v7 UUIDs
+```
+
+### Comparison
+
+```php
+$a = Uuid::v4();
+$b = Uuid::v4();
+
+Uuid::equals($a, $a);        // true
+Uuid::equals($a, $b);        // false
+
+Uuid::compareTo($a, $b);     // -1, 0, or 1
+```
+
 ### Nil UUID
 
 ```php
@@ -95,6 +123,9 @@ $nil = Uuid::nil();
 | `Uuid::fromBytes(string $bytes): string` | Convert 16-byte binary to UUID string |
 | `Uuid::toOrdered(string $uuid): string` | Reorder UUID for database index performance |
 | `Uuid::fromOrdered(string $ordered): string` | Reverse an ordered UUID to standard format |
+| `Uuid::equals(string $a, string $b): bool` | Case-insensitive UUID equality check |
+| `Uuid::compareTo(string $a, string $b): int` | Lexicographic comparison (-1, 0, 1) for sorting |
+| `Uuid::batch(int $count, int $version = 4): array` | Generate multiple UUIDs at once |
 | `Uuid::nil(): string` | Return the nil UUID (all zeros) |
 
 ## Development
