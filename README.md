@@ -4,7 +4,7 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/philiprehberger/php-uuid-tools.svg)](https://packagist.org/packages/philiprehberger/php-uuid-tools)
 [![Last updated](https://img.shields.io/github/last-commit/philiprehberger/php-uuid-tools)](https://github.com/philiprehberger/php-uuid-tools/commits/main)
 
-UUID v4 and v7 generation, validation, and ordered UUIDs for database indexing.
+UUID v4, v5, and v7 generation, ULID support, short ID encoding, and ordered UUIDs for database indexing.
 
 ## Requirements
 
@@ -34,6 +34,67 @@ Time-ordered UUIDs with millisecond precision, ideal for database primary keys:
 ```php
 $uuid = Uuid::v7();
 // "018e4f6c-1a2b-7000-8000-1234567890ab"
+```
+
+### Generate UUID v5
+
+Deterministic namespace-based UUIDs using SHA-1 hashing:
+
+```php
+use PhilipRehberger\UuidTools\Uuid;
+
+$uuid = Uuid::v5(Uuid::NAMESPACE_DNS, 'example.com');
+// "cfbff0d1-9375-5685-968c-48ce8b15ae17"
+
+// Same inputs always produce the same UUID
+$uuid2 = Uuid::v5(Uuid::NAMESPACE_DNS, 'example.com');
+// $uuid === $uuid2
+
+// Available namespace constants:
+// Uuid::NAMESPACE_DNS, Uuid::NAMESPACE_URL,
+// Uuid::NAMESPACE_OID, Uuid::NAMESPACE_X500
+```
+
+### ULID
+
+Generate ULIDs (Universally Unique Lexicographically Sortable Identifiers):
+
+```php
+use PhilipRehberger\UuidTools\Ulid;
+
+$ulid = Ulid::generate();
+// "01ARZ3NDEKTSV4RRFFQ69G5FAV"
+
+Ulid::isValid($ulid); // true
+
+// Convert between ULID and UUID
+$uuid = Ulid::toUuid($ulid);
+$ulid = Ulid::fromUuid($uuid);
+
+// Extract timestamp (milliseconds since Unix epoch)
+$ms = Ulid::timestamp($ulid);
+
+// Convenience methods on Uuid class
+$ulid = Uuid::ulid();
+Uuid::isValidUlid($ulid); // true
+```
+
+### Short IDs
+
+Encode UUIDs as compact Base62 strings (~22 characters):
+
+```php
+use PhilipRehberger\UuidTools\ShortId;
+
+$shortId = ShortId::encode('550e8400-e29b-41d4-a716-446655440000');
+// "2D5MNbitT4FNsgGOLfVm6q"
+
+$uuid = ShortId::decode($shortId);
+// "550e8400-e29b-41d4-a716-446655440000"
+
+// Convenience methods on Uuid class
+$shortId = Uuid::toShortId($uuid);
+$uuid = Uuid::fromShortId($shortId);
 ```
 
 ### Validate a UUID
@@ -116,6 +177,7 @@ $nil = Uuid::nil();
 | Method | Description |
 |---|---|
 | `Uuid::v4(): string` | Generate a random UUID v4 |
+| `Uuid::v5(string $namespace, string $name): string` | Generate a deterministic UUID v5 (SHA-1) |
 | `Uuid::v7(): string` | Generate a time-ordered UUID v7 |
 | `Uuid::isValid(string $uuid): bool` | Validate a UUID string (any version) |
 | `Uuid::version(string $uuid): ?int` | Extract the version number (null if invalid) |
@@ -127,6 +189,17 @@ $nil = Uuid::nil();
 | `Uuid::compareTo(string $a, string $b): int` | Lexicographic comparison (-1, 0, 1) for sorting |
 | `Uuid::batch(int $count, int $version = 4): array` | Generate multiple UUIDs at once |
 | `Uuid::nil(): string` | Return the nil UUID (all zeros) |
+| `Uuid::ulid(): string` | Generate a ULID |
+| `Uuid::isValidUlid(string $ulid): bool` | Validate a ULID string |
+| `Uuid::toShortId(string $uuid): string` | Encode UUID as Base62 short ID |
+| `Uuid::fromShortId(string $shortId): string` | Decode Base62 short ID to UUID |
+| `Ulid::generate(): string` | Generate a new ULID |
+| `Ulid::isValid(string $ulid): bool` | Validate a ULID string |
+| `Ulid::toUuid(string $ulid): string` | Convert ULID to UUID format |
+| `Ulid::fromUuid(string $uuid): string` | Convert UUID to ULID format |
+| `Ulid::timestamp(string $ulid): int` | Extract Unix timestamp (ms) from ULID |
+| `ShortId::encode(string $uuid): string` | Encode UUID as Base62 short ID |
+| `ShortId::decode(string $shortId): string` | Decode Base62 short ID to UUID |
 
 ## Development
 

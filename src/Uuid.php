@@ -13,6 +13,18 @@ final class Uuid
 {
     private const VALID_PATTERN = '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i';
 
+    /** DNS namespace UUID (RFC 4122). */
+    public const NAMESPACE_DNS = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
+
+    /** URL namespace UUID (RFC 4122). */
+    public const NAMESPACE_URL = '6ba7b811-9dad-11d1-80b4-00c04fd430c8';
+
+    /** OID namespace UUID (RFC 4122). */
+    public const NAMESPACE_OID = '6ba7b812-9dad-11d1-80b4-00c04fd430c8';
+
+    /** X.500 DN namespace UUID (RFC 4122). */
+    public const NAMESPACE_X500 = '6ba7b814-9dad-11d1-80b4-00c04fd430c8';
+
     /**
      * Generate a random UUID v4.
      */
@@ -184,6 +196,71 @@ final class Uuid
     public static function compareTo(string $a, string $b): int
     {
         return strtolower($a) <=> strtolower($b);
+    }
+
+    /**
+     * Generate a deterministic UUID v5 using SHA-1 hashing.
+     *
+     * @param  string  $namespace  A valid UUID to use as namespace
+     * @param  string  $name  The name to hash within the namespace
+     *
+     * @throws InvalidArgumentException
+     */
+    public static function v5(string $namespace, string $name): string
+    {
+        if (! self::isValid($namespace)) {
+            throw new InvalidArgumentException("Invalid namespace UUID: '{$namespace}'.");
+        }
+
+        $namespaceBytes = self::toBytes($namespace);
+        $hash = sha1($namespaceBytes.$name);
+
+        // Take first 16 bytes (32 hex chars) of SHA-1 hash
+        $hex = substr($hash, 0, 32);
+        $bytes = hex2bin($hex);
+
+        // Set version 5 (0101)
+        $bytes[6] = chr((ord($bytes[6]) & 0x0F) | 0x50);
+        // Set variant 10xx
+        $bytes[8] = chr((ord($bytes[8]) & 0x3F) | 0x80);
+
+        return self::formatBytes($bytes);
+    }
+
+    /**
+     * Generate a ULID (Universally Unique Lexicographically Sortable Identifier).
+     */
+    public static function ulid(): string
+    {
+        return Ulid::generate();
+    }
+
+    /**
+     * Validate a ULID string.
+     */
+    public static function isValidUlid(string $ulid): bool
+    {
+        return Ulid::isValid($ulid);
+    }
+
+    /**
+     * Encode a UUID as a Base62 short ID (~22 characters).
+     *
+     * @throws InvalidArgumentException
+     */
+    public static function toShortId(string $uuid): string
+    {
+        return ShortId::encode($uuid);
+    }
+
+    /**
+     * Decode a Base62 short ID back to a UUID string.
+     *
+     * @throws InvalidArgumentException
+     */
+    public static function fromShortId(string $shortId): string
+    {
+        return ShortId::decode($shortId);
     }
 
     /**

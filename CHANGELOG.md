@@ -4,6 +4,13 @@ All notable changes to `php-uuid-tools` will be documented in this file.
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-03-31
+
+### Added
+- UUID v5 generation via `Uuid::v5()` with standard RFC 4122 namespace constants
+- ULID support via `Uuid::ulid()`, `Ulid::generate()`, `Ulid::toUuid()`, and `Ulid::timestamp()`
+- Short ID encoding via `Uuid::toShortId()` and `Uuid::fromShortId()` using Base62
+
 ## [1.1.1] - 2026-03-31
 
 ### Changed
