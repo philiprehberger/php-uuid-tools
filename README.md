@@ -1,8 +1,8 @@
-# UUID Tools for PHP
+# PHP UUID Tools
 
 [![Tests](https://github.com/philiprehberger/php-uuid-tools/actions/workflows/tests.yml/badge.svg)](https://github.com/philiprehberger/php-uuid-tools/actions/workflows/tests.yml)
-[![Latest Version](https://img.shields.io/packagist/v/philiprehberger/php-uuid-tools)](https://packagist.org/packages/philiprehberger/php-uuid-tools)
-[![License](https://img.shields.io/packagist/l/philiprehberger/php-uuid-tools)](LICENSE)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/philiprehberger/php-uuid-tools.svg)](https://packagist.org/packages/philiprehberger/php-uuid-tools)
+[![License](https://img.shields.io/github/license/philiprehberger/php-uuid-tools)](LICENSE)
 
 UUID v4 and v7 generation, validation, and ordered UUIDs for database indexing. Framework-agnostic, zero dependencies.
 
@@ -97,7 +97,7 @@ $nil = Uuid::nil();
 | `Uuid::fromOrdered(string $ordered): string` | Reverse an ordered UUID to standard format |
 | `Uuid::nil(): string` | Return the nil UUID (all zeros) |
 
-## Testing
+## Development
 
 ```bash
 composer install
@@ -108,4 +108,4 @@ vendor/bin/phpstan analyse
 
 ## License
 
-MIT - see [LICENSE](LICENSE) for details.
+MIT
