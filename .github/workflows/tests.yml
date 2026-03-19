@@ -74,4 +74,6 @@ jobs:
     steps:
       - name: Packagist webhook
         run: |
-          curl -s -X POST             "https://packagist.org/api/update-package?username=${{{{ secrets.PACKAGIST_USERNAME }}}}&apiToken=${{{{ secrets.PACKAGIST_TOKEN }}}}"             -d '{{"repository":{{"url":"https://github.com/philiprehberger/php-uuid-tools"}}}}'
+          curl -s -X POST \
+            "https://packagist.org/api/update-package?username=${{ secrets.PACKAGIST_USERNAME }}&apiToken=${{ secrets.PACKAGIST_TOKEN }}" \
+            -d '{"repository":{"url":"https://github.com/philiprehberger/php-uuid-tools"}}'
