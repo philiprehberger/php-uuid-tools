@@ -136,4 +136,110 @@ final class UuidTest extends TestCase
         $this->assertSame('00000000-0000-0000-0000-000000000000', $nil);
         $this->assertTrue(Uuid::isValid($nil));
     }
+
+    #[Test]
+    public function equals_with_same_uuid(): void
+    {
+        $uuid = Uuid::v4();
+
+        $this->assertTrue(Uuid::equals($uuid, $uuid));
+    }
+
+    #[Test]
+    public function equals_with_different_case(): void
+    {
+        $uuid = '550e8400-e29b-41d4-a716-446655440000';
+
+        $this->assertTrue(Uuid::equals($uuid, strtoupper($uuid)));
+    }
+
+    #[Test]
+    public function equals_with_different_uuids(): void
+    {
+        $a = Uuid::v4();
+        $b = Uuid::v4();
+
+        $this->assertFalse(Uuid::equals($a, $b));
+    }
+
+    #[Test]
+    public function compare_to_with_equal_uuids(): void
+    {
+        $uuid = Uuid::v4();
+
+        $this->assertSame(0, Uuid::compareTo($uuid, $uuid));
+    }
+
+    #[Test]
+    public function compare_to_with_v4_uuids(): void
+    {
+        $a = '00000000-0000-4000-8000-000000000000';
+        $b = 'ffffffff-ffff-4fff-bfff-ffffffffffff';
+
+        $this->assertSame(-1, Uuid::compareTo($a, $b));
+        $this->assertSame(1, Uuid::compareTo($b, $a));
+    }
+
+    #[Test]
+    public function compare_to_with_v7_uuids(): void
+    {
+        $first = Uuid::v7();
+        usleep(1000);
+        $second = Uuid::v7();
+
+        $this->assertSame(-1, Uuid::compareTo($first, $second));
+        $this->assertSame(1, Uuid::compareTo($second, $first));
+    }
+
+    #[Test]
+    public function batch_generates_correct_count(): void
+    {
+        $uuids = Uuid::batch(10);
+
+        $this->assertCount(10, $uuids);
+    }
+
+    #[Test]
+    public function batch_generates_unique_uuids(): void
+    {
+        $uuids = Uuid::batch(50);
+
+        $this->assertCount(50, array_unique($uuids));
+    }
+
+    #[Test]
+    public function batch_generates_v4_by_default(): void
+    {
+        $uuids = Uuid::batch(5);
+
+        foreach ($uuids as $uuid) {
+            $this->assertTrue(Uuid::isValid($uuid));
+            $this->assertSame(4, Uuid::version($uuid));
+        }
+    }
+
+    #[Test]
+    public function batch_generates_v7_when_specified(): void
+    {
+        $uuids = Uuid::batch(5, 7);
+
+        foreach ($uuids as $uuid) {
+            $this->assertTrue(Uuid::isValid($uuid));
+            $this->assertSame(7, Uuid::version($uuid));
+        }
+    }
+
+    #[Test]
+    public function batch_throws_on_invalid_count(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        Uuid::batch(0);
+    }
+
+    #[Test]
+    public function batch_throws_on_unsupported_version(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        Uuid::batch(5, 3);
+    }
 }

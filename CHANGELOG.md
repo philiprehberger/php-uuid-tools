@@ -1,8 +1,15 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to `php-uuid-tools` will be documented in this file.
 
 ## [Unreleased]
+
+## [1.1.0] - 2026-03-22
+
+### Added
+- `equals()` method for UUID comparison
+- `compareTo()` method for UUID sorting
+- `batch()` static method for generating multiple UUIDs at once
 
 ## [1.0.2] - 2026-03-17
 
