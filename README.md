@@ -3,6 +3,7 @@
 [![Tests](https://github.com/philiprehberger/php-uuid-tools/actions/workflows/tests.yml/badge.svg)](https://github.com/philiprehberger/php-uuid-tools/actions/workflows/tests.yml)
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/philiprehberger/php-uuid-tools.svg)](https://packagist.org/packages/philiprehberger/php-uuid-tools)
 [![License](https://img.shields.io/github/license/philiprehberger/php-uuid-tools)](LICENSE)
+[![Sponsor](https://img.shields.io/badge/sponsor-GitHub%20Sponsors-ec6cb9)](https://github.com/sponsors/philiprehberger)
 
 UUID v4 and v7 generation, validation, and ordered UUIDs for database indexing.
 
