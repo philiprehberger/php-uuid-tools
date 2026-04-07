@@ -74,6 +74,10 @@ $ulid = Ulid::fromUuid($uuid);
 // Extract timestamp (milliseconds since Unix epoch)
 $ms = Ulid::timestamp($ulid);
 
+// Decode the timestamp into a DateTimeImmutable (UTC by default)
+$dt = Ulid::toDateTime($ulid);
+$dtLocal = Ulid::toDateTime($ulid, new \DateTimeZone('America/New_York'));
+
 // Convenience methods on Uuid class
 $ulid = Uuid::ulid();
 Uuid::isValidUlid($ulid); // true
@@ -102,6 +106,14 @@ $uuid = Uuid::fromShortId($shortId);
 ```php
 Uuid::isValid('550e8400-e29b-41d4-a716-446655440000'); // true
 Uuid::isValid('not-a-uuid');                            // false
+
+// Validate many UUIDs at once; returns indices of invalid entries
+Uuid::validateBatch([
+    '550e8400-e29b-41d4-a716-446655440000',
+    'not-a-uuid',
+    '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
+]);
+// [1]
 ```
 
 ### Extract Version
@@ -180,6 +192,7 @@ $nil = Uuid::nil();
 | `Uuid::v5(string $namespace, string $name): string` | Generate a deterministic UUID v5 (SHA-1) |
 | `Uuid::v7(): string` | Generate a time-ordered UUID v7 |
 | `Uuid::isValid(string $uuid): bool` | Validate a UUID string (any version) |
+| `Uuid::validateBatch(array $uuids): array` | Return indices of invalid UUIDs in a list |
 | `Uuid::version(string $uuid): ?int` | Extract the version number (null if invalid) |
 | `Uuid::toBytes(string $uuid): string` | Convert UUID to 16-byte binary |
 | `Uuid::fromBytes(string $bytes): string` | Convert 16-byte binary to UUID string |
@@ -198,6 +211,7 @@ $nil = Uuid::nil();
 | `Ulid::toUuid(string $ulid): string` | Convert ULID to UUID format |
 | `Ulid::fromUuid(string $uuid): string` | Convert UUID to ULID format |
 | `Ulid::timestamp(string $ulid): int` | Extract Unix timestamp (ms) from ULID |
+| `Ulid::toDateTime(string $ulid, ?\DateTimeZone $tz = null): \DateTimeImmutable` | Decode ULID timestamp into a DateTimeImmutable (UTC default) |
 | `ShortId::encode(string $uuid): string` | Encode UUID as Base62 short ID |
 | `ShortId::decode(string $shortId): string` | Decode Base62 short ID to UUID |
 

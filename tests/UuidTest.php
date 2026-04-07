@@ -242,4 +242,26 @@ final class UuidTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         Uuid::batch(5, 3);
     }
+
+    #[Test]
+    public function validate_batch_returns_indices_of_invalid_uuids(): void
+    {
+        $uuids = [
+            '550e8400-e29b-41d4-a716-446655440000',
+            'not-a-uuid',
+            '6ba7b810-9dad-11d1-80b4-00c04fd430c8',
+            '',
+            'gggggggg-gggg-gggg-gggg-gggggggggggg',
+        ];
+
+        $this->assertSame([1, 3, 4], Uuid::validateBatch($uuids));
+    }
+
+    #[Test]
+    public function validate_batch_returns_empty_when_all_valid(): void
+    {
+        $uuids = Uuid::batch(3);
+
+        $this->assertSame([], Uuid::validateBatch($uuids));
+    }
 }

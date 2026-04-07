@@ -291,6 +291,24 @@ final class Uuid
     }
 
     /**
+     * Validate a list of UUIDs and return the indices of invalid entries.
+     *
+     * @param  array<int, string>  $uuids
+     * @return list<int>
+     */
+    public static function validateBatch(array $uuids): array
+    {
+        $invalid = [];
+        foreach (array_values($uuids) as $index => $uuid) {
+            if (! self::isValid($uuid)) {
+                $invalid[] = $index;
+            }
+        }
+
+        return $invalid;
+    }
+
+    /**
      * Return the nil UUID (all zeros).
      */
     public static function nil(): string
