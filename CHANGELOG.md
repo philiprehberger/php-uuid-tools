@@ -4,6 +4,12 @@ All notable changes to `php-uuid-tools` will be documented in this file.
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-04-06
+
+### Added
+- `Uuid::validateBatch()` for validating a list of UUIDs and returning indices of invalid entries
+- `Ulid::toDateTime()` for decoding a ULID's timestamp into a `DateTimeImmutable` with optional timezone
+
 ## [1.2.0] - 2026-03-31
 
 ### Added

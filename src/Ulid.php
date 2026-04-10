@@ -119,6 +119,30 @@ final class Ulid
     }
 
     /**
+     * Decode the timestamp portion of a ULID into a DateTimeImmutable.
+     *
+     * @throws InvalidArgumentException
+     */
+    public static function toDateTime(string $ulid, ?\DateTimeZone $tz = null): \DateTimeImmutable
+    {
+        $timestampMs = self::timestamp($ulid);
+        $seconds = intdiv($timestampMs, 1000);
+        $micros = ($timestampMs % 1000) * 1000;
+
+        $dt = \DateTimeImmutable::createFromFormat(
+            'U.u',
+            sprintf('%d.%06d', $seconds, $micros),
+            new \DateTimeZone('UTC'),
+        );
+
+        if ($dt === false) {
+            throw new InvalidArgumentException("Failed to convert ULID timestamp: '{$ulid}'.");
+        }
+
+        return $dt->setTimezone($tz ?? new \DateTimeZone('UTC'));
+    }
+
+    /**
      * Encode 10 random bytes as 16 Crockford Base32 characters.
      */
     private static function encodeBytesToBase32(string $bytes): string

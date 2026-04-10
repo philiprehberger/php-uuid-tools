@@ -83,6 +83,36 @@ final class UlidTest extends TestCase
     }
 
     #[Test]
+    public function to_date_time_round_trips_a_known_timestamp(): void
+    {
+        // Generate a ULID, capture its millisecond timestamp, then verify
+        // toDateTime returns the same instant.
+        $ulid = Ulid::generate();
+        $expectedMs = Ulid::timestamp($ulid);
+
+        $dt = Ulid::toDateTime($ulid);
+
+        $this->assertSame('UTC', $dt->getTimezone()->getName());
+        $actualMs = (int) $dt->format('U') * 1000 + (int) $dt->format('v');
+        $this->assertSame($expectedMs, $actualMs);
+    }
+
+    #[Test]
+    public function to_date_time_applies_supplied_timezone(): void
+    {
+        $ulid = Ulid::generate();
+        $tz = new \DateTimeZone('America/New_York');
+
+        $dt = Ulid::toDateTime($ulid, $tz);
+
+        $this->assertSame('America/New_York', $dt->getTimezone()->getName());
+        // Underlying instant must still match the ULID timestamp.
+        $expectedMs = Ulid::timestamp($ulid);
+        $actualMs = (int) $dt->format('U') * 1000 + (int) $dt->format('v');
+        $this->assertSame($expectedMs, $actualMs);
+    }
+
+    #[Test]
     public function uuid_ulid_convenience_method_returns_valid_ulid(): void
     {
         $ulid = Uuid::ulid();
